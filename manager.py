@@ -8,8 +8,7 @@ import pandas as pd
 
 import sqlalchemy
 
-#multiprocessing pool
-from multiprocessing import Pool
+from gevent.pool import Pool
 
 #tushare library
 import tushare as tsdata
@@ -28,7 +27,7 @@ class Dataset(object):
     def connect(self):        
         return self.dbengine.connect()
     
-    def getColumn(self, tbl_name, field_name):
+    def getColumn(self, tbl_name, field_name):        
         with self.connect() as conn:
             sql=f'select {field_name} from {tbl_name}'
             data=pd.read_sql(sql, con=conn)
@@ -156,14 +155,14 @@ class StockUpdater(object):
         self.step=1
         self.total=0
     
-    def getAllUpdatedStockData(self, workers=5):
-        with Pool(processes=workers) as pool:
-            symbols=self.data.getStockSymbols()
-            self.total=len(symbols)
-            results=pool.map(self.getUpdatedStockData,symbols)
+    def getAllUpdatedStockData(self, workers=5):        
+        pool = Pool(workers)
+        symbols=self.data.getStockSymbols()
+        self.total=len(symbols)
+        results=pool.map(self.getUpdatedStockData,symbols)        
         return results
     
-    def getUpdatedStockData(self, symbol, total):
+    def getUpdatedStockData(self, symbol):
         data=self.data.getUpdatedStockData(symbol)
         update_progress(self.step/self.total)
         self.step+=1
@@ -184,8 +183,9 @@ class StockUpdater(object):
             step+=1
         return error_stocks
 
-
 if __name__=='__main__':
     updater=StockUpdater()
-    data=updater.getAllUpdatedStockData()
-    errors=updater.updateStocks(data)
+    results=updater.getAllUpdatedStockData()
+    errolist=updater.updateStocks(results)
+    
+    
