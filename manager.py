@@ -67,9 +67,9 @@ class StockData(object):
     conn_str="sqlite:///data.db"
     tbl_name_symbols='stock_info'
     
-    def __init__(self):
+    def __init__(self, conn_str=None):
         self.logfile="data/log.txt"
-        self.dataset=Dataset(self.conn_str)
+        if not conn_str: self.dataset=Dataset(self.conn_str)
         self.updated_data={}
         
     def getStockInfoViaTushare(self):
@@ -98,7 +98,7 @@ class StockData(object):
             df=pd.DataFrame(data=data, columns=['date', 'open', 'close', 'high', 'low', 'volume'])
             result = df.set_index('date')
         except sqlalchemy.exc.OperationalError:
-            result=pd.DataFrame(colums=['date', 'open', 'close', 'high', 'low', 'volume'])
+            result=pd.DataFrame(columns=['date', 'open', 'close', 'high', 'low', 'volume'])
         return result
     
         
@@ -150,8 +150,8 @@ class StockData(object):
             
 class StockUpdater(object):
     
-    def __init__(self):
-        self.data=StockData()
+    def __init__(self, conn_str=None):
+        self.data=StockData(conn_str)
         self.step=1
         self.total=0
     
@@ -185,7 +185,9 @@ class StockUpdater(object):
 
 if __name__=='__main__':
     updater=StockUpdater()
+    print('retrieving data ...')
     results=updater.getAllUpdatedStockData()
+    print('\nupdating database ...')
     errolist=updater.updateStocks(results)
     
     
