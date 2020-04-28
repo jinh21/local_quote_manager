@@ -1,0 +1,11 @@
+{
+    "db":{
+        "type" : "postgresql",
+        "driver" : "psycopg2",
+        "username" : "findb_manager",
+        "password" : "db123",
+        "host" : "localhost",
+        "port" : "5432",
+        "name" : "findb"
+    }
+}
