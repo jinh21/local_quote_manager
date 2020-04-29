@@ -43,3 +43,7 @@ def get_futures_daily_data_from_sina(symbol):
         # updating existing dataframe by filling data
         data.loc[record[0]] = [float(x) for x in record[1:]]
     return data
+
+
+
+
