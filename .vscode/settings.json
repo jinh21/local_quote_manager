@@ -2,7 +2,7 @@
     "python.linting.pylintEnabled": true,
     "python.linting.flake8Enabled": false,
     "python.linting.enabled": true,
-    "python.pythonPath": "D:\\ShuilianStudio\\Tools\\Anaconda3\\envs\\pydb\\python.exe",
+    "python.pythonPath": "/Users/Kean/anaconda3/envs/pydb/bin/python",
     "python.testing.pytestArgs": [
         "."
     ],
